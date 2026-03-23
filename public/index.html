@@ -136,7 +136,7 @@
     </div>
 
     <div class="card" style="margin-top: 20px;">
-        <h3> Historial de Consultas (SQLite)</h3>
+        <h3> Historial de Consultas </h3>
         <table id="tablaHistorial">
             <thead>
                 <tr>
@@ -177,6 +177,7 @@
             await cargarHistorial(); // Actualizar tabla 
         } catch (e) {
             alert("Error al conectar con el servidor local [cite: 121]");
+            await dibujarMapa(coords.oLat, coords.oLon, coords.dLat, coords.dLon);
         } finally {
             btn.innerText = 'Calcular Ruta y Guardar';
             btn.disabled = false;
@@ -204,7 +205,42 @@
 
     // Cargar historial al iniciar la página 
     window.onload = cargarHistorial;
+
+    // ===== MAPA (Leaflet) =====
+const map = L.map('map').setView([-16.4090, -71.5375], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+}).addTo(map);
+
+let marcadorOrigen, marcadorDestino, lineaRuta;
+
+// ===== DIBUJAR RUTA EN MAPA =====
+async function dibujarMapa(oLat, oLon, dLat, dLon) {
+
+    // Limpiar mapa
+    if (marcadorOrigen) map.removeLayer(marcadorOrigen);
+    if (marcadorDestino) map.removeLayer(marcadorDestino);
+    if (lineaRuta) map.removeLayer(lineaRuta);
+
+    // Marcadores
+    marcadorOrigen = L.marker([oLat, oLon]).addTo(map).bindPopup("Origen");
+    marcadorDestino = L.marker([dLat, dLon]).addTo(map).bindPopup("Destino");
+
+    // Ruta OSRM
+    const url = `https://router.project-osrm.org/route/v1/driving/${oLon},${oLat};${dLon},${dLat}?overview=full&geometries=geojson`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+
+    lineaRuta = L.polyline(coords).addTo(map);
+
+    map.fitBounds(lineaRuta.getBounds());
+}
 </script>
+
 
 </body>
 </html>
