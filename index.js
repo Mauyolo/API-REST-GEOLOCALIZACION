@@ -1,5 +1,16 @@
 import express from 'express';
 import sqlite3 from 'sqlite3'; // Asegúrate de haber ejecutado: npm install sqlite3
+import pg from 'pg';
+const { Pool } = pg;
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
+// En el endpoint de guardado:
+const query = 'INSERT INTO historial (origen_dir, destino_dir, distancia_km, duracion_min) VALUES ($1, $2, $3, $4)';
+await pool.query(query, [geoO.display_name, geoD.display_name, d_km, t_min]);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
