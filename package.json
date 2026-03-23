@@ -1,7 +1,7 @@
 {
   "name": "lab-geoloc",
   "version": "1.0.0",
-  "description": "Laboratorio de Geolocalización OSM",
+  "description": "Laboratorio de Geolocalización con PostgreSQL en Render",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -13,6 +13,6 @@
   "license": "ISC",
   "dependencies": {
     "express": "^5.2.1",
-    "sqlite3": "^6.0.1"
+    "pg": "^8.11.3"
   }
 }
