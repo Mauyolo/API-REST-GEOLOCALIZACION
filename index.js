@@ -1,5 +1,4 @@
 import express from 'express';
-import sqlite3 from 'sqlite3'; // Asegúrate de haber ejecutado: npm install sqlite3
 import pg from 'pg';
 const { Pool } = pg;
 
